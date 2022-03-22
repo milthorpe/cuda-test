@@ -1,9 +1,11 @@
-if [ "$HOSTNAME" = "oswald03" ]; then
-  module load gnu/9.2.0 nvhpc/21.7
-	export CUDA_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/21.7/cuda
-elif [ "$HOSTNAME" = "leconte" ]; then
+if [[ "$HOSTNAME" = oswald* ]]; then
+  module load gnu/9.1.0 nvhpc/21.7
+  export CUDA_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/21.7/cuda
+elif [[ "$HOSTNAME" = "leconte" ]]; then
   module load gnu/9.2.0 nvhpc/21.3
   export CUDA_PATH=/opt/nvidia/hpc_sdk/Linux_ppc64le/21.3/cuda
+elif [[ "$HOSTNAME" = equinox* ]]; then
+  export CUDA_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/21.7/cuda/11.4
 fi
 
 #only update the path and library-path the first time!
