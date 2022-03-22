@@ -33,14 +33,36 @@ void check_error(char* region_message){
   }
 }
 
-int main(){
+char *read_file(char *filename) {
+	char *buffer = 0;
+	long length;
+	FILE *f = fopen(filename, "rb");
 
+	if (f) {
+		fseek(f, 0, SEEK_END);
+		length = ftell(f);
+		fseek(f, 0, SEEK_SET);
+		buffer = malloc(length);
+		if (buffer) {
+			fread(buffer, 1, length, f);
+		}
+		fclose(f);
+	}
+	return buffer;
+}
+
+int main(){
+  CUDA_CHECK(cuInit(0));
   CUdevice device;
-  cuDeviceGet(&device,0);
+  CUDA_CHECK(cuDeviceGet(&device,0));
   CUcontext ctx;
-  cuCtxCreate(&ctx,0,device);
+  CUDA_CHECK(cuCtxCreate(&ctx,0,device));
   CUmodule mod;
   CUDA_CHECK(cuModuleLoad(&mod, "kernel.ptx"));
+  //char *kernel_data = read_file("kernel.ptx");
+  //printf("loaded kernel:\n%s\n", kernel_data);
+  //CUDA_CHECK(cuModuleLoadData(&mod, kernel_data));
+  //free(kernel_data);
   CUfunction vector_add;
   CUDA_CHECK(cuModuleGetFunction(&vector_add, mod, "vector_add"));
   check_error("load cuda kernel");
