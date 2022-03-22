@@ -9,6 +9,16 @@
 size_t N = 10000000;
 #define MAX_ERR 1e-6
 
+#define CUDA_CHECK(x)                                                          \
+	do {                                                                   \
+		cudaError_t err = (x);                                         \
+		if (err != CUDA_SUCCESS) {                                     \
+			fprintf(stderr, "CUDA error: %s returned %d (%s) at %s:%d\n", \
+				#x, err, cudaGetErrorString(err), __FILE__, __LINE__);               \
+			return err;                                            \
+		}                                                              \
+	} while (0)
+
 void host_vector_add(float *out, float *a, float *b, int n) {
   for(int i = 0; i < n; i++){
     out[i] = a[i] + b[i];
@@ -30,9 +40,9 @@ int main(){
   CUcontext ctx;
   cuCtxCreate(&ctx,0,device);
   CUmodule mod;
-  cuModuleLoad(&mod,"kernel.ptx");
+  CUDA_CHECK(cuModuleLoad(&mod, "kernel.ptx"));
   CUfunction vector_add;
-  cuModuleGetFunction(&vector_add,mod,"vector_add");
+  CUDA_CHECK(cuModuleGetFunction(&vector_add, mod, "vector_add"));
   check_error("load cuda kernel");
 
   float *a, *b, *out, *d_a, *d_b, *d_out; 
