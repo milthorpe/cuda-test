@@ -1,5 +1,5 @@
 if [[ "$HOSTNAME" = oswald* ]]; then
-  module load gnu/9.1.0 nvhpc/21.7
+  module load gnu/9.2.0 nvhpc/21.7
   export CUDA_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/21.7/cuda
 elif [[ "$HOSTNAME" = "leconte" ]]; then
   module load gnu/9.2.0 nvhpc/21.3
