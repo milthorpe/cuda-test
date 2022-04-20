@@ -5,6 +5,7 @@ elif [[ "$HOSTNAME" = "leconte" ]]; then
   module load gnu/9.2.0 nvhpc/21.3
   export CUDA_PATH=/opt/nvidia/hpc_sdk/Linux_ppc64le/21.3/cuda
 elif [[ "$HOSTNAME" = equinox* ]]; then
+  module load gnu/10.2.0
   export CUDA_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/21.7/cuda/11.4
 fi
 
