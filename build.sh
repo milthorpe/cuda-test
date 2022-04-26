@@ -7,6 +7,11 @@ elif [[ "$HOSTNAME" = "leconte" ]]; then
 elif [[ "$HOSTNAME" = equinox* ]]; then
   module load gnu/10.2.0 nvhpc/21.7
   export CUDA_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/21.7/cuda/11.4
+elif [[ "$HOSTNAME" = whale* ]]; then
+  export CUDA_PATH=/usr/local/cuda
+else
+  export CUDA_PATH=/usr/local/cuda-11.4
+  export CPATH=/usr/local/cuda-11.4/include:$CPATH
 fi
 
 #only update the path and library-path the first time!
@@ -19,4 +24,5 @@ make clean
 make
 make run-inline
 make run-outline
+make run-inline-clang
 #make debug-outline
