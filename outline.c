@@ -51,14 +51,18 @@ char *read_file(char *filename) {
 	return buffer;
 }
 
-int main(){
+int main(int argc, char* argv[]) {
+  if (argc < 2) {
+    fprintf(stderr, "Usage: %s kernel.ptx", argv[0]);
+  }
+  char *kernel_filename = argv[1];
   CUDA_CHECK(cuInit(0));
   CUdevice device;
   CUDA_CHECK(cuDeviceGet(&device,0));
   CUcontext ctx;
   CUDA_CHECK(cuCtxCreate(&ctx,0,device));
   CUmodule mod;
-  CUDA_CHECK(cuModuleLoad(&mod, "kernel.ptx"));
+  CUDA_CHECK(cuModuleLoad(&mod, kernel_filename));
   //char *kernel_data = read_file("kernel.ptx");
   //printf("loaded kernel:\n%s\n", kernel_data);
   //CUDA_CHECK(cuModuleLoadData(&mod, kernel_data));

@@ -20,9 +20,10 @@ if [[ $PATH != *$CUDA_PATH* ]]; then
   export LD_LIBRARY_PATH=$CUDA_PATH/lib64:$LD_LIBRARY_PATH
 fi
 
-make clean
+#make clean
 make
 make run-inline
 make run-outline
 make run-inline-clang
+make run-outline-clang
 #make debug-outline

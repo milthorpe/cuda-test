@@ -14,14 +14,24 @@ test-outline: kernel.ptx outline.c
 test-inline-clang: inline.cu
 	clang++ -O2 --cuda-path=$(CUDA_PATH) --cuda-gpu-arch=sm_60 inline.cu -L$(CUDA_PATH)/lib64 -lcudart -o test-inline-clang
 
+kernel-clang.ptx: kernel.cu
+	clang++ -S -emit-llvm --cuda-gpu-arch=sm_60 kernel.cu
+	llc -mcpu=sm_60 kernel-cuda-nvptx64-nvidia-cuda-sm_60.ll -o kernel-clang.ptx
+
+test-outline-clang: kernel-clang.ptx outline.c
+	clang -I$(CUDA_PATH)/include outline.c -L$(CUDA_PATH)/lib64 -lcuda -lcudart -o test-outline-clang
+
 run-inline: test-inline
 	./test-inline
 
 run-outline: test-outline
-	./test-outline
+	./test-outline kernel.ptx
 
 run-inline-clang: test-inline-clang
 	./test-inline-clang
+
+run-outline-clang: test-outline-clang
+	./test-outline-clang kernel-clang.ptx
 
 debug-outline: test-outline
 	gdb ./test-outline
