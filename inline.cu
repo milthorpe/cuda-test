@@ -8,6 +8,16 @@
 #define N 10000000
 #define MAX_ERR 1e-6
 
+#define CUDA_CHECK(x)                                                          \
+	do {                                                                   \
+		cudaError_t err = (x);                                         \
+		if (err != CUDA_SUCCESS) {                                     \
+			fprintf(stderr, "CUDA error: %s returned %d (%s) at %s:%d\n", \
+				#x, err, cudaGetErrorString(err), __FILE__, __LINE__);               \
+			return err;                                            \
+		}                                                              \
+	} while (0)
+
 void host_vector_add(float *out, float *a, float *b, int n) {
   for(int i = 0; i < n; i++){
     out[i] = a[i] + b[i];
@@ -34,13 +44,13 @@ int main(){
   }
 
   // Allocate device memory for a
-  cudaMalloc((void**)&d_a, sizeof(float) * N);
-  cudaMalloc((void**)&d_b, sizeof(float) * N);
-  cudaMalloc((void**)&d_out, sizeof(float) * N);
+  CUDA_CHECK(cudaMalloc((void**)&d_a, sizeof(float) * N));
+  CUDA_CHECK(cudaMalloc((void**)&d_b, sizeof(float) * N));
+  CUDA_CHECK(cudaMalloc((void**)&d_out, sizeof(float) * N));
 
   // Transfer data from host to device memory
-  cudaMemcpy(d_a, a, sizeof(float) * N, cudaMemcpyHostToDevice);
-  cudaMemcpy(d_b, b, sizeof(float) * N, cudaMemcpyHostToDevice);
+  CUDA_CHECK(cudaMemcpy(d_a, a, sizeof(float) * N, cudaMemcpyHostToDevice));
+  CUDA_CHECK(cudaMemcpy(d_b, b, sizeof(float) * N, cudaMemcpyHostToDevice));
   //cudaMemcpy(d_out, out, sizeof(float) * N, cudaMemcpyHostToDevice);
 
   // Main function
@@ -49,7 +59,7 @@ int main(){
   vector_add<<<1,1>>>(d_out, d_a, d_b, N);
 
   float* test_out = (float*)malloc(sizeof(float) * N);
-  cudaMemcpy(test_out, d_out, sizeof(float) * N, cudaMemcpyDeviceToHost);
+  CUDA_CHECK(cudaMemcpy(test_out, d_out, sizeof(float) * N, cudaMemcpyDeviceToHost));
 
   // validate results (on the host)
   for(int i = 0; i < N; i++){
