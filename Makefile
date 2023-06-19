@@ -8,11 +8,10 @@ kernel.ptx: kernel.cu
 	$(CUDA_PATH)/bin/nvcc -ptx kernel.cu -o kernel.ptx
 
 test-outline: kernel.ptx outline.c
-	#$(CC) -I$(CUDA_PATH)/include -L$(CUDA_PATH)/lib64 -std=c99 outline.c -o test-outline  -lcuda  -lcudart
 	$(CUDA_PATH)/bin/nvcc --compiler-options="-std=c99" -I$(CUDA_PATH)/include -L$(CUDA_PATH)/lib64 outline.c -o test-outline -lcuda -lcudart
 
 test-inline-clang: inline.cu
-	clang++ -O2 --cuda-path=$(CUDA_PATH) --cuda-gpu-arch=$(SM) inline.cu -L$(CUDA_PATH)/lib64 -lcudart -o test-inline-clang
+	clang++ -O2 --cuda-path=$(CUDA_PATH) inline.cu -L$(CUDA_PATH)/lib64 -lcudart -o test-inline-clang
 
 kernel-clang.ptx: kernel.cu
 	clang++ -S -emit-llvm --cuda-gpu-arch=$(SM) kernel.cu
