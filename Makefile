@@ -35,6 +35,8 @@ run-outline-clang: test-outline-clang
 debug-outline: test-outline
 	gdb ./test-outline
 
+.PHONY:	clean
+
 clean:
 	rm -f test-inline test-outline kernel.ptx test-inline-clang
 
