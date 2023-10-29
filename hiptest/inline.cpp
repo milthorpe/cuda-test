@@ -13,7 +13,7 @@
 	do {                                                                   \
 		hipError_t err = (x);                                         \
 		if (err != hipSuccess) {                                     \
-			fprintf(stderr, "CUDA error: %s returned %d (%s) at %s:%d\n", \
+			fprintf(stderr, "HIP error: %s returned %d (%s) at %s:%d\n", \
 				#x, err, hipGetErrorString(err), __FILE__, __LINE__);               \
 			return err;                                            \
 		}                                                              \
@@ -35,6 +35,7 @@ int main(){
   int runtime_version;
   HIP_CHECK(hipRuntimeGetVersion(&runtime_version));
   printf("HIP runtime version: %d\n", runtime_version);
+  HIP_CHECK(hipInit(0));
 
   float *a, *b, *out, *d_a, *d_b, *d_out; 
 
@@ -75,7 +76,7 @@ int main(){
     }
   }
 
-  printf("Inline Check Passed --- the CUDA runtime can correctly run kernels.\n");
+  printf("Inline Check Passed --- the HIP runtime can correctly run kernels.\n");
 
   hipFree(d_a);
   hipFree(d_b);
